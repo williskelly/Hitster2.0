@@ -17,15 +17,24 @@
 <script>
 (async () => {
   const id = new URLSearchParams(location.search).get('id');
-  if (!id) { document.getElementById('title').textContent = 'ID manquant'; return; }
+  if (!id) {
+    document.getElementById('title').textContent = 'ID manquant';
+    return;
+  }
 
-  const r = await fetch(`https://spotifycharts-embed-backend.vercel.app/track/${id}`);
-  const t = await r.json();
-  document.getElementById('title').textContent = `${t.name} – ${t.artists.join(', ')}`;
+  const r = await fetch('tracks.json');
+  const data = await r.json();
+  const track = data[id];
 
+  if (!track) {
+    document.getElementById('title').textContent = 'Chanson inconnue';
+    return;
+  }
+
+  document.getElementById('title').textContent = `${track.title} – ${track.artist}`;
   const player = document.getElementById('player');
-  player.src = t.preview_url;
-  player.play().catch(()=>{});
+  player.src = track.preview_url;
+  player.play().catch(() => {});
 })();
 </script>
 </body>
